@@ -79,7 +79,9 @@ function AddClientPage() {
 					['email', 'Email', 'email']
 				].map(([name, label, type]) => (
 					<div className="col-md-6" key={name}>
-						<label htmlFor={name} className="form-label">{label}</label>
+						<label htmlFor={name} className="form-label">
+							{label}
+						</label>
 						<input
 							type={type}
 							className="form-control"
@@ -93,7 +95,9 @@ function AddClientPage() {
 				))}
 
 				<div className="col-md-6">
-					<label htmlFor="gender" className="form-label">Gender</label>
+					<label htmlFor="gender" className="form-label">
+						Gender
+					</label>
 					<select
 						id="gender"
 						name="gender"
@@ -110,12 +114,10 @@ function AddClientPage() {
 				</div>
 
 				<div className="col-12">
-					<button type="submit" className="btn btn-success me-2">Add Client</button>
-					<button
-						type="button"
-						className="btn btn-secondary"
-						onClick={() => navigate('/clients')}
-					>
+					<button type="submit" className="btn btn-success me-2">
+						Add Client
+					</button>
+					<button type="button" className="btn btn-secondary" onClick={() => navigate('/clients')}>
 						Cancel
 					</button>
 				</div>
