@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import ClientsListPage from './pages/ClientsListPage';
 import AddClientPage from './pages/AddClientPage';
 import EditClientPage from './pages/EditClientPage';
+import ViewClientPage from './pages/ViewClientPage';
 
 function App() {
 	console.log('App Loaded');
@@ -12,6 +13,7 @@ function App() {
 				<Route path="/" element={<Navigate to="/clients" replace />} />
 				<Route path="/clients" element={<ClientsListPage />} />
 				<Route path="/clients/add" element={<AddClientPage />} />
+				<Route path="/clients/view/:id" element={<ViewClientPage />} />
 				<Route path="/clients/edit/:id" element={<EditClientPage />} />
 			</Routes>
 		</div>

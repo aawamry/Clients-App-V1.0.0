@@ -1,7 +1,7 @@
 const API_BASE_URL = 'http://localhost:3000/api/clients';
 
 // Fetch all clients
-export async function getClients() {
+export async function getAllClients() {
 	try {
 		const response = await fetch(API_BASE_URL);
 		if (!response.ok) {
@@ -59,6 +59,21 @@ export async function updateClient(id, data) {
 		return result;
 	} catch (error) {
 		console.error('Error in updateClient:', error);
+		throw error;
+	}
+}
+
+export async function deleteClient(id) {
+	try {
+		const response = await fetch(`${API_BASE_URL}/${id}`, {
+			method: 'DELETE'
+		});
+		if (!response.ok) {
+			throw new Error('Failed to delete client');
+		}
+		return await response.json();
+	} catch (error) {
+		console.error('Error deleting client:', error);
 		throw error;
 	}
 }
