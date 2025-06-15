@@ -1,23 +1,30 @@
 // src/App.jsx
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import HomePage from './pages/HomePage';
 import ClientsListPage from './pages/ClientsListPage';
 import AddClientPage from './pages/AddClientPage';
 import EditClientPage from './pages/EditClientPage';
 import ViewClientPage from './pages/ViewClientPage';
 
 function App() {
-	console.log('App Loaded');
-	return (
-		<div className="mt-4">
-			<Routes>
-				<Route path="/" element={<Navigate to="/clients" replace />} />
-				<Route path="/clients" element={<ClientsListPage />} />
-				<Route path="/clients/add" element={<AddClientPage />} />
-				<Route path="/clients/view/:id" element={<ViewClientPage />} />
-				<Route path="/clients/edit/:id" element={<EditClientPage />} />
-			</Routes>
-		</div>
-	);
+  return (
+      <div className="d-flex flex-column min-vh-100">
+        <Header />
+        <main className="flex-fill">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/clients" element={<ClientsListPage />} />
+            <Route path="/clients/add" element={<AddClientPage />} />
+            <Route path="/clients/edit/:id" element={<EditClientPage />} />
+            <Route path="/clients/view/:id" element={<ViewClientPage />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+  );
 }
 
 export default App;
+

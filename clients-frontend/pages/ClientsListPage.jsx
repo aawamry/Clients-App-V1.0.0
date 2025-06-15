@@ -35,7 +35,7 @@ function ClientsListPage() {
 	return (
 		<div className="container-fluid mt-4">
 			<div className="card">
-				<div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+				<div className="card-header bg-gray text-primary d-flex justify-content-between align-items-center">
 					<h5 className="mb-0">Clients List</h5>
 					<button className="btn btn-light btn-sm" onClick={() => navigate('/clients/add')}>
 						+ Add Client
@@ -79,7 +79,7 @@ function ClientsListPage() {
 										<td>{client.email}</td>
 										<td className="text-center">
 											<button
-												className="btn btn-sm btn-outline-secondary me-1"
+												className="btn btn-sm btn-outline-success me-1"
 												title="View"
 												onClick={() => navigate(`/clients/view/${client.id}`)}
 											>
