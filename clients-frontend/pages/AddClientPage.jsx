@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { addClient } from '../services/clientService';
+import { toast } from 'react-toastify';
 
 function AddClientPage() {
 	const navigate = useNavigate();
@@ -39,6 +40,7 @@ function AddClientPage() {
 
 		try {
 			const result = await addClient(cleanedData);
+      toast.success('Client Added Successfully');
 			console.log('✅ Client added:', result);
 			navigate('/clients');
 		} catch (error) {
@@ -47,6 +49,7 @@ function AddClientPage() {
 			} else {
 				setFormErrors([error.message || 'Something went wrong']);
 			}
+      toast.error('Failed to add client');
 		}
 	};
 

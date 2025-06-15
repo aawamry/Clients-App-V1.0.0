@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getClientById, updateClient } from '../services/clientService';
-
+import { toast } from 'react-toastify';
+//...
 function EditClientPage() {
 	const { id } = useParams();
 	const navigate = useNavigate();
@@ -50,6 +51,7 @@ function EditClientPage() {
 
 		try {
 			const result = await updateClient(id, formData); // clientId from useParams
+			toast.success('Client Updated Successfully');
 			console.log('✅ Client updated:', result);
 			navigate('/clients');
 		} catch (error) {
@@ -58,6 +60,7 @@ function EditClientPage() {
 			} else {
 				setFormErrors([error.message || 'Something went wrong']);
 			}
+			toast.error('Failed to Update client');
 		}
 	};
 

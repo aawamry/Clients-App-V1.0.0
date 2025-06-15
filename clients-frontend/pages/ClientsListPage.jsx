@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllClients, deleteClient } from '../services/clientService';
+import { toast } from 'react-toastify';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function ClientsListPage() {
@@ -23,10 +24,11 @@ function ClientsListPage() {
 		if (!window.confirm('Are you sure you want to delete this client?')) return;
 		try {
 			await deleteClient(id);
+			toast.success('Client deleted');
 			setClients((prev) => prev.filter((client) => client.id !== id));
 		} catch (err) {
 			console.error('Delete failed:', err);
-			alert('Failed to delete client.');
+			toast.error('Failed to delete client');
 		}
 	};
 

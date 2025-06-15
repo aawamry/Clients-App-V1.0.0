@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getClientById, deleteClient } from '../services/clientService';
+import { toast } from 'react-toastify';
 
 function ViewClientPage() {
 	const { id } = useParams();
@@ -24,8 +25,10 @@ function ViewClientPage() {
 			try {
 				await deleteClient(id);
 				navigate('/clients');
+				toast.success('Client deleted');
 			} catch (error) {
 				console.error('Failed to delete client:', error);
+				toast.error('Failed to delete client');
 			}
 		}
 	};
