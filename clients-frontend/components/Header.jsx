@@ -7,9 +7,9 @@ function Header() {
       <div className="container d-flex justify-content-between align-items-center">
         <h3 className="m-0">Clients App</h3>
         <nav>
-          <Link to="/" className="text-white me-3">Home</Link>
-          <Link to="/clients" className="text-white me-3">Clients</Link>
-          <Link to="/clients/add" className="text-white">Add</Link>
+          <Link to="/" className="btn btn-outline-light text-white me-2">Home</Link>
+          <Link to="/clients" className="btn btn-outline-light text-white me-2">Clients</Link>
+          <Link to="clients/analytics" className="btn btn-outline-light text-white">Analytics</Link>
         </nav>
       </div>
     </header>

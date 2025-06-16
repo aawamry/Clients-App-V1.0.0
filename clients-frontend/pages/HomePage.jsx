@@ -8,7 +8,7 @@ function HomePage() {
       <p className="lead mb-4">Manage clients efficiently and with ease.</p>
       <div className="d-flex justify-content-center gap-3">
         <Link to="/clients" className="btn btn-primary">📋 View Clients</Link>
-        <Link to="/clients/add" className="btn btn-success">➕ Add Client</Link>
+        <Link to="/clients/analytics" className="btn btn-success">➕ Analytics Page</Link>
       </div>
     </div>
   );

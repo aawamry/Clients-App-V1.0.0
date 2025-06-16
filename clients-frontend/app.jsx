@@ -7,6 +7,7 @@ import ClientsListPage from './pages/ClientsListPage';
 import AddClientPage from './pages/AddClientPage';
 import EditClientPage from './pages/EditClientPage';
 import ViewClientPage from './pages/ViewClientPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/clients" element={<ClientsListPage />} />
             <Route path="/clients/add" element={<AddClientPage />} />
+            <Route path="/clients/analytics" element={<AnalyticsPage />} />
             <Route path="/clients/edit/:id" element={<EditClientPage />} />
             <Route path="/clients/view/:id" element={<ViewClientPage />} />
           </Routes>
