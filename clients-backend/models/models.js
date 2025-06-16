@@ -72,8 +72,6 @@ export async function addClientModel({
 	gender,
 	phone = [],
 	email,
-	created_at,
-	updated_at
 }) {
 	console.log('➕ addClient called with:', { firstName, lastName, companyName, phone, city, email });
 
@@ -95,8 +93,6 @@ export async function addClientModel({
 		gender,
 		phoneString,
 		email,
-		created_at,
-		updated_at
 	]);
 
 	console.log('📤 Insert result:', result);
@@ -117,8 +113,6 @@ export async function addClientModel({
 			gender,
 			phone: phoneString,
 			email,
-			created_at,
-			updated_at
 		};
 	} else {
 		console.warn('⚠️ No Client was added.');
