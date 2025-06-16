@@ -50,6 +50,23 @@ function ClientsListPage() {
 		}
 	};
 
+	const columns = [
+		{ label: 'ID', key: 'id' },
+		{ label: 'First Name', key: 'firstName' },
+		{ label: 'Middle Name', key: 'middleName' },
+		{ label: 'Last Name', key: 'lastName' },
+		{ label: 'Company', key: 'companyName' },
+		{ label: 'Address', key: 'address' },
+		{ label: 'Region', key: 'region' },
+		{ label: 'City', key: 'city' },
+		{ label: 'Nationality', key: 'nationality' },
+		{ label: 'DOB', key: 'dateOfBirth' },
+		{ label: 'Gender', key: 'gender' },
+		{ label: 'Phone', key: 'phone' },
+		{ label: 'Email', key: 'email' },
+		{ label: 'Created At', key: 'created_at' }
+	];
+
 	return (
 		<div className="container-fluid mt-4">
 			<div className="card">
@@ -75,38 +92,18 @@ function ClientsListPage() {
 						<table className="table table-sm table-bordered mb-0 text-nowrap">
 							<thead className="table-light text-center">
 								<tr>
-									<th>ID</th>
-									<th>First Name</th>
-									<th>Middle Name</th>
-									<th>Last Name</th>
-									<th>Company</th>
-									<th>Address</th>
-									<th>Region</th>
-									<th>City</th>
-									<th>Nationality</th>
-									<th>DOB</th>
-									<th>Gender</th>
-									<th>Phone</th>
-									<th>Email</th>
+									{columns.map((col) => (
+										<th key={col.key}>{col.label}</th>
+									))}
 									<th>Actions</th>
 								</tr>
 							</thead>
 							<tbody>
 								{paginatedClients.map((client) => (
 									<tr key={client.id}>
-										<td>{client.id}</td>
-										<td>{client.firstName}</td>
-										<td>{client.middleName}</td>
-										<td>{client.lastName}</td>
-										<td>{client.companyName}</td>
-										<td>{client.address}</td>
-										<td>{client.region}</td>
-										<td>{client.city}</td>
-										<td>{client.nationality}</td>
-										<td>{client.dateOfBirth}</td>
-										<td>{client.gender}</td>
-										<td>{client.phone}</td>
-										<td>{client.email}</td>
+										{columns.map((col) => (
+											<td key={col.key}>{client[col.key]}</td>
+										))}
 										<td className="text-center">
 											<button
 												className="btn btn-sm btn-outline-success me-1"
