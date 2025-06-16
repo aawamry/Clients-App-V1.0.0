@@ -2,10 +2,11 @@ function SummaryTab({ clients = [] }) {
 	if (!Array.isArray(clients) || clients.length === 0) {
 		return <div className="text-muted p-3">No data available for summary.</div>;
 	}
+
 	const total = clients.length;
 
 	const thisMonth = clients.filter((c) => {
-		const date = new Date(c.createdAt);
+		const date = new Date(c.created_at);
 		const now = new Date();
 		return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
 	}).length;
@@ -22,6 +23,7 @@ function SummaryTab({ clients = [] }) {
 
 	return (
 		<div className="row text-center">
+			{/* Total Clients */}
 			<div className="col">
 				<div className="card bg-light mb-2">
 					<div className="card-body">
@@ -30,14 +32,21 @@ function SummaryTab({ clients = [] }) {
 					</div>
 				</div>
 			</div>
+
+			{/* Added This Month */}
 			<div className="col">
 				<div className="card bg-light mb-2">
 					<div className="card-body">
 						<h4>{thisMonth}</h4>
 						<p>Added This Month</p>
+						{thisMonth === 0 && (
+							<small className="text-muted">(no new clients)</small>
+						)}
 					</div>
 				</div>
 			</div>
+
+			{/* Average Age */}
 			<div className="col">
 				<div className="card bg-light mb-2">
 					<div className="card-body">
@@ -49,5 +58,5 @@ function SummaryTab({ clients = [] }) {
 		</div>
 	);
 }
-export default SummaryTab;
 
+export default SummaryTab;
