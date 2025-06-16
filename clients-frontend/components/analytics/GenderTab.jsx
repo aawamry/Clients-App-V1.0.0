@@ -5,7 +5,6 @@ function GenderTab({ clients }) {
 		return <div className="text-muted p-3">No data available for gender insights.</div>;
 	}
 
-	// Count genders
 	const genderCounts = clients.reduce((acc, { gender }) => {
 		acc[gender] = (acc[gender] || 0) + 1;
 		return acc;
@@ -16,7 +15,20 @@ function GenderTab({ clients }) {
 	return (
 		<>
 			<div className="text-center mb-4">
-				<PieChartTab clients={clients} field="gender" title="Gender Distribution" />
+				<PieChartTab data={data} title="Gender Distribution" />
+			</div>
+
+			<div className="row text-center">
+				{data.map(({ name, value }) => (
+					<div className="col" key={name}>
+						<div className="card bg-light mb-2">
+							<div className="card-body">
+								<h4>{value}</h4>
+								<p>{name}</p>
+							</div>
+						</div>
+					</div>
+				))}
 			</div>
 		</>
 	);
