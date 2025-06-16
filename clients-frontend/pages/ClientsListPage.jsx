@@ -63,6 +63,7 @@ function ClientsListPage() {
 						<table className="table table-sm table-bordered mb-0 text-nowrap">
 							<thead className="table-light text-center">
 								<tr>
+									<th>ID</th>
 									<th>First Name</th>
 									<th>Middle Name</th>
 									<th>Last Name</th>
@@ -81,6 +82,7 @@ function ClientsListPage() {
 							<tbody>
 								{filteredClients.map((client) => (
 									<tr key={client.id}>
+										<td>{client.id}</td>
 										<td>{client.firstName}</td>
 										<td>{client.middleName}</td>
 										<td>{client.lastName}</td>
