@@ -6,6 +6,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function ClientsListPage() {
 	const [clients, setClients] = useState([]);
+	const [searchTerm, setSearchTerm] = useState('');
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -19,6 +20,11 @@ function ClientsListPage() {
 		};
 		fetchClients();
 	}, []);
+
+	const filteredClients = clients.filter((client) => {
+		const target = `${client.firstName} ${client.lastName} ${client.companyName} ${client.email}`.toLowerCase();
+		return target.includes(searchTerm.toLowerCase());
+	});
 
 	const handleDelete = async (id) => {
 		if (!window.confirm('Are you sure you want to delete this client?')) return;
@@ -42,6 +48,16 @@ function ClientsListPage() {
 					</button>
 				</div>
 
+				<div className="mb-3">
+					<input
+						type="text"
+						className="form-control"
+						placeholder="Search by name, company, or email..."
+						value={searchTerm}
+						onChange={(e) => setSearchTerm(e.target.value)}
+					/>
+				</div>
+
 				<div className="card-body p-0">
 					<div className="table-responsive">
 						<table className="table table-sm table-bordered mb-0 text-nowrap">
@@ -63,7 +79,7 @@ function ClientsListPage() {
 								</tr>
 							</thead>
 							<tbody>
-								{clients.map((client) => (
+								{filteredClients.map((client) => (
 									<tr key={client.id}>
 										<td>{client.firstName}</td>
 										<td>{client.middleName}</td>
