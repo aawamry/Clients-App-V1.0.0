@@ -30,4 +30,12 @@ A **Basic Full-Stack CRUD Application** built with **Node.js** (Express) backend
 - [Bootstrap 5](https://getbootstrap.com/) for UI styling
 
 ---
+✅ To Do
+
+
+Add search & filtering
+Add pagination
+Add Dashboard
+Add authentication (JWT)
+
 
