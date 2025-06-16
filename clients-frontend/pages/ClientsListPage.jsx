@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { getAllClients, deleteClient } from '../services/clientService';
 import { toast } from 'react-toastify';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import DataTable from '../components/DataTable';
+import Pagination from '../components/Pagination';
 
 function ClientsListPage() {
 	const [clients, setClients] = useState([]);
@@ -88,83 +90,37 @@ function ClientsListPage() {
 				</div>
 
 				<div className="card-body p-0">
-					<div className="table-responsive">
-						<table className="table table-sm table-bordered mb-0 text-nowrap">
-							<thead className="table-light text-center">
-								<tr>
-									{columns.map((col) => (
-										<th key={col.key}>{col.label}</th>
-									))}
-									<th>Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								{paginatedClients.map((client) => (
-									<tr key={client.id}>
-										{columns.map((col) => (
-											<td key={col.key}>{client[col.key]}</td>
-										))}
-										<td className="text-center">
-											<button
-												className="btn btn-sm btn-outline-success me-1"
-												title="View"
-												onClick={() => navigate(`/clients/view/${client.id}`)}
-											>
-												<i className="bi bi-eye"></i>
-											</button>
-											<button
-												className="btn btn-sm btn-outline-warning me-1"
-												title="Edit"
-												onClick={() => navigate(`/clients/edit/${client.id}`)}
-											>
-												<i className="bi bi-pencil"></i>
-											</button>
-											<button
-												className="btn btn-sm btn-outline-danger"
-												title="Delete"
-												onClick={() => handleDelete(client.id)}
-											>
-												<i className="bi bi-trash"></i>
-											</button>
-										</td>
-									</tr>
-								))}
-								{filteredClients.length === 0 && (
-									<tr>
-										<td colSpan="13" className="text-center text-muted py-3">
-											No clients found.
-										</td>
-									</tr>
-								)}
-							</tbody>
-						</table>
-					</div>
-					{totalPages > 1 && (
-						<div className="card-footer text-center">
-							<nav>
-								<ul className="pagination justify-content-center mb-0">
-									<li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-										<button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>
-											Previous
-										</button>
-									</li>
-									{[...Array(totalPages)].map((_, index) => (
-										<li key={index} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
-											<button className="page-link" onClick={() => setCurrentPage(index + 1)}>
-												{index + 1}
-											</button>
-										</li>
-									))}
-									<li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-										<button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>
-											Next
-										</button>
-									</li>
-								</ul>
-							</nav>
-						</div>
-					)}
+					<DataTable
+						columns={columns}
+						data={paginatedClients}
+						actions={(client) => (
+							<>
+								<button
+									className="btn btn-sm btn-outline-success me-1"
+									title="View"
+									onClick={() => navigate(`/clients/view/${client.id}`)}
+								>
+									<i className="bi bi-eye"></i>
+								</button>
+								<button
+									className="btn btn-sm btn-outline-warning me-1"
+									title="Edit"
+									onClick={() => navigate(`/clients/edit/${client.id}`)}
+								>
+									<i className="bi bi-pencil"></i>
+								</button>
+								<button
+									className="btn btn-sm btn-outline-danger"
+									title="Delete"
+									onClick={() => handleDelete(client.id)}
+								>
+									<i className="bi bi-trash"></i>
+								</button>
+							</>
+						)}
+					/>
 				</div>
+				<Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
 			</div>
 		</div>
 	);
