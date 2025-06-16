@@ -21,11 +21,19 @@ function ClientsListPage() {
 		fetchClients();
 	}, []);
 
+	// Filtering logic
 	const filteredClients = clients.filter((client) => {
 		const target = `${client.firstName} ${client.lastName} ${client.companyName} ${client.email}`.toLowerCase();
 		return target.includes(searchTerm.toLowerCase());
 	});
 
+	// Pagination logic
+	const [currentPage, setCurrentPage] = useState(1);
+	const itemsPerPage = 5;
+	const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
+	const paginatedClients = filteredClients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+	// Delete logic
 	const handleDelete = async (id) => {
 		if (!window.confirm('Are you sure you want to delete this client?')) return;
 		try {
@@ -80,7 +88,7 @@ function ClientsListPage() {
 								</tr>
 							</thead>
 							<tbody>
-								{filteredClients.map((client) => (
+								{paginatedClients.map((client) => (
 									<tr key={client.id}>
 										<td>{client.id}</td>
 										<td>{client.firstName}</td>
@@ -129,6 +137,29 @@ function ClientsListPage() {
 								)}
 							</tbody>
 						</table>
+					</div>
+					<div className="card-footer text-center">
+						<nav>
+							<ul className="pagination justify-content-center mb-0">
+								<li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+									<button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>
+										Previous
+									</button>
+								</li>
+								{[...Array(totalPages)].map((_, index) => (
+									<li key={index} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
+										<button className="page-link" onClick={() => setCurrentPage(index + 1)}>
+											{index + 1}
+										</button>
+									</li>
+								))}
+								<li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+									<button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>
+										Next
+									</button>
+								</li>
+							</ul>
+						</nav>
 					</div>
 				</div>
 			</div>
