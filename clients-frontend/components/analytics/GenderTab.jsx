@@ -13,24 +13,28 @@ function GenderTab({ clients }) {
 	const data = Object.entries(genderCounts).map(([name, value]) => ({ name, value }));
 
 	return (
-		<>
-			<div className="text-center mb-4">
-				<PieChartTab data={data} title="Gender Distribution" />
-			</div>
-
-			<div className="row text-center">
-				{data.map(({ name, value }) => (
-					<div className="col" key={name}>
-						<div className="card bg-light mb-2">
-							<div className="card-body">
-								<h4>{value}</h4>
-								<p>{name}</p>
+		<div className="row">
+			{/* Summary cards column */}
+			<div className="col-md-4 d-flex align-items-center">
+				<div className="row w-100 text-center">
+					{data.map(({ name, value }) => (
+						<div className="col-12 mb-2" key={name}>
+							<div className="card bg-light">
+								<div className="card-body">
+									<h4>{value}</h4>
+									<p>{name}</p>
+								</div>
 							</div>
 						</div>
-					</div>
-				))}
+					))}
+				</div>
 			</div>
-		</>
+			{/* Chart column */}
+			<div className="col-md-8 text-center mb-4">
+				<h5>Gender Distribution</h5>
+				<PieChartTab data={data} title="Gender Distribution" />
+			</div>
+		</div>
 	);
 }
 
