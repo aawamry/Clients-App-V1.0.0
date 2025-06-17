@@ -153,13 +153,13 @@ export const importClientsCSV = async (req, res) => {
 	const { data } = req.body;
 
 	if (!Array.isArray(data) || data.length === 0) {
-		return res.status(400).json({ error: 'No data provided' });
+		return res.status(400).json({ error: 'Client sent something wrong' });
 	}
 
 	let importedCount = 0;
 
 	try {
-		const db = await ClientsDatabase.getInstance();
+		const { db: dbInstance } = await ClientsDatabase.getInstance();
 
 		for (const client of data) {
 			// Validate fields
@@ -169,7 +169,7 @@ export const importClientsCSV = async (req, res) => {
 			}
 
 			// Check for existing phone/email
-			const existing = await db.db.get(`SELECT * FROM clients WHERE phone = ? OR email = ?`, [
+			const existing = await dbInstance.get(`SELECT * FROM clients WHERE phone = ? OR email = ?`, [
 				client.phone,
 				client.email
 			]);
