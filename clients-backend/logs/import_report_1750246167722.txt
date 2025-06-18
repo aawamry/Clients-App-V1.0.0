@@ -1,0 +1,13 @@
+--- Import Report ---
+
+✅ Imported: 2
+❌ Skipped: 3
+
+--- Imported Clients ---
+1. Nada Salem | nada.salem@mail.com | 1123456789
+2. Ahmed Magdy | ahmed.magdy@mail.com | 1098765432
+
+--- Skipped Clients ---
+1. Mohamed Hosny | hosny@email.com | Reason: Duplicate
+2. Sherif Sabry | sabry@email.com | Reason: Duplicate
+3. Hend Akef | akef@mail.com | Reason: Duplicate
