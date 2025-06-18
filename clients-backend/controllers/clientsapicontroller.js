@@ -1,6 +1,7 @@
 import { validationResult } from 'express-validator';
 import { Parser } from 'json2csv';
-import fs from 'fs';
+import fs from 'fs/promises';
+import path from 'path';
 import ClientsDatabase from '../data/data.js';
 import {
 	getAllClientsModel,
@@ -157,18 +158,21 @@ export const importClientsCSV = async (req, res) => {
 	}
 
 	let importedCount = 0;
+	let unimportedCount = 0;
+	const importedClients = [];
+	const skippedClients = [];
 
 	try {
 		const { db: dbInstance } = await ClientsDatabase.getInstance();
 
 		for (const client of data) {
-			// Validate fields
 			if (!client.firstName || !client.lastName || !client.email || !client.phone) {
 				console.warn('⚠️ Skipping invalid client:', client);
+				skippedClients.push({ reason: 'Missing required fields', client });
+				unimportedCount++;
 				continue;
 			}
 
-			// Check for existing phone/email
 			const existing = await dbInstance.get(`SELECT * FROM clients WHERE phone = ? OR email = ?`, [
 				client.phone,
 				client.email
@@ -176,22 +180,51 @@ export const importClientsCSV = async (req, res) => {
 
 			if (existing) {
 				console.warn('🚫 Duplicate client skipped:', client.phone, client.email);
+				skippedClients.push({ reason: 'Duplicate', client });
+				unimportedCount++;
 				continue;
 			}
 
 			try {
 				await addClientModel({
 					...client,
-					dateOfBirth: client.birthdate // map CSV field to DB field
+					dateOfBirth: client.birthdate
 				});
+				importedClients.push(client);
 				importedCount++;
 				console.log(`✅ Imported: ${client.firstName} ${client.lastName}`);
 			} catch (insertErr) {
 				console.error('❌ Error inserting client:', client, insertErr.message);
+				skippedClients.push({ reason: insertErr.message, client });
+				unimportedCount++;
 			}
 		}
 
-		res.json({ count: importedCount });
+		// 📝 Prepare text content
+		let fileContent = `--- Import Report ---\n\n`;
+		fileContent += `✅ Imported: ${importedCount}\n`;
+		fileContent += `❌ Skipped: ${unimportedCount}\n\n`;
+
+		fileContent += `--- Imported Clients ---\n`;
+		importedClients.forEach((c, i) => {
+			fileContent += `${i + 1}. ${c.firstName} ${c.lastName} | ${c.email} | ${c.phone}\n`;
+		});
+
+		fileContent += `\n--- Skipped Clients ---\n`;
+		skippedClients.forEach((item, i) => {
+			fileContent += `${i + 1}. ${item.client.firstName || 'N/A'} ${item.client.lastName || 'N/A'} | ${
+				item.client.email || 'N/A'
+			} | Reason: ${item.reason}\n`;
+		});
+
+		// 🗂️ Write to file
+		const reportPath = path.resolve('logs', `import_report_${Date.now()}.txt`);
+		await fs.mkdir(path.dirname(reportPath), { recursive: true });
+		await fs.writeFile(reportPath, fileContent);
+		console.log('✅ Log file written successfully:', reportPath);
+
+		// 🎯 Send file path or result
+		res.json({ imported: importedCount, skipped: unimportedCount, report: reportPath });
 	} catch (err) {
 		console.error('❌ CSV Import failed:', err.message);
 		res.status(500).json({ error: 'CSV import failed' });
