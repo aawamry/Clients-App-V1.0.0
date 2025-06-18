@@ -101,7 +101,7 @@ function ClientsListPage() {
 						{ data: csvData },
 						{ headers: { 'Content-Type': 'application/json' } }
 					);
-					toast.success(`${response.data.count} clients imported successfully`);
+					toast.success(response.data?.message || 'Clients imported successfully');
 				} catch (err) {
 					console.error('Import failed:', err);
 					toast.error('Failed to import clients');

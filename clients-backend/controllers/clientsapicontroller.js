@@ -224,7 +224,12 @@ export const importClientsCSV = async (req, res) => {
 		console.log('✅ Log file written successfully:', reportPath);
 
 		// 🎯 Send file path or result
-		res.json({ imported: importedCount, skipped: unimportedCount, report: reportPath });
+		res.json({
+			message: `✅ ${importedCount} imported, ❌ ${unimportedCount} skipped.`,
+			imported: importedCount,
+			skipped: unimportedCount,
+			report: reportPath
+		});
 	} catch (err) {
 		console.error('❌ CSV Import failed:', err.message);
 		res.status(500).json({ error: 'CSV import failed' });
