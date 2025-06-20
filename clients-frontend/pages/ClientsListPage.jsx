@@ -48,7 +48,7 @@ function ClientsListPage() {
 	useEffect(() => {
 		setCurrentPage(1);
 	}, [searchTerm]);
-
+	if (!Array.isArray(clients)) return <p>Loading or no data available</p>;
 	const filteredClients = clients.filter((client) => {
 		const target = `${client.firstName} ${client.lastName} ${client.companyName} ${client.email}`.toLowerCase();
 		return target.includes(searchTerm.toLowerCase());
