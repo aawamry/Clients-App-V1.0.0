@@ -10,9 +10,16 @@ router.get('/', async (req, res) => {
     const dbInstance = await initEventsLogDB();
     const db = dbInstance.db;
 
-    const rows = await db.all(getAllLogsQuery);
-    res.json(rows);
+    const rows = await new Promise((resolve, reject) => {
+      db.all(getAllLogsQuery, (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
+
+    res.status(200).json(rows);
   } catch (err) {
+    console.error('Error fetching logs:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
