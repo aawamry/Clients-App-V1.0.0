@@ -1,4 +1,4 @@
-import ClientsDatabase from '../data/data.js';
+import {initClientsDB} from '../data/clientsdatabase.js';
 import {
 	getAllQuery,
 	getByFieldQuery,
@@ -10,10 +10,10 @@ import {
 
 export async function getAllClientsModel() {
 	console.log('📥 getAllClients called');
-	const dbInstance = await ClientsDatabase.getInstance();
-	console.log('✅ Database instance acquired');
+	const dbInstance = await initClientsDB();
+	console.log('✅ Clients Database instance acquired');
 
-	const clients = await dbInstance.db.all(getAllQuery('clients'));
+	const clients = await dbInstance.all(getAllQuery('clients'));
 	console.log('📄 Retrieved clients from DB:', clients.length);
 
 	return clients;
@@ -21,7 +21,7 @@ export async function getAllClientsModel() {
 
 export async function getClientsByFieldModel(field, value) {
 	console.log(`🔍 getClientsByField called with field: ${field}, value: ${value}`);
-	const dbInstance = await ClientsDatabase.getInstance();
+	const dbInstance = await initClientsDB();
 	console.log('✅ Database instance acquired');
 
 	const allowedFields = [
@@ -50,7 +50,7 @@ export async function getClientsByFieldModel(field, value) {
 
 export const getClientByIdModel = async (id) => {
 	try {
-		const dbInstance = await ClientsDatabase.getInstance();
+		const dbInstance = await initClientsDB();
 		const row = await dbInstance.db.get(getByIdQuery('clients'), [id]);
 		return row;
 	} catch (error) {
@@ -75,7 +75,7 @@ export async function addClientModel({
 }) {
 	console.log('➕ addClient called with:', { firstName, lastName, companyName, phone, city, email });
 
-	const dbInstance = await ClientsDatabase.getInstance();
+	const dbInstance = await initClientsDB();
 	console.log('✅ Database instance acquired');
 
 	const phoneString = Array.isArray(phone) ? phone.join(',') : phone;
@@ -135,7 +135,7 @@ export async function updateClientModel({
 	phone = [],
 	email
 }) {
-	const dbInstance = await ClientsDatabase.getInstance();
+	const dbInstance = await initClientsDB();
 	const phoneArray = Array.isArray(phone) ? phone : [phone];
 	const phoneString = phoneArray.join(',');
 
@@ -201,7 +201,7 @@ export async function updateClientModel({
 }
 
 export async function deleteClientModel(id) {
-	const dbInstance = await ClientsDatabase.getInstance();
+	const dbInstance = await initClientsDB();
 	await dbInstance.db.run(deleteClientQuery('clients'), [id]);
 	return { message: `Client ${id} Deleted Successfully` };
 }

@@ -2,7 +2,7 @@ import { validationResult } from 'express-validator';
 import { Parser } from 'json2csv';
 import fs from 'fs/promises';
 import path from 'path';
-import ClientsDatabase from '../data/data.js';
+import {initClientsDB} from '../data/clientsdatabase.js';
 import {
 	getAllClientsModel,
 	addClientModel,
@@ -163,7 +163,7 @@ export const importClientsCSV = async (req, res) => {
 	const skippedClients = [];
 
 	try {
-		const { db: dbInstance } = await ClientsDatabase.getInstance();
+		const { db: dbInstance } = await await initClientsDB();
 
 		for (const client of data) {
 			if (!client.firstName || !client.lastName || !client.email || !client.phone) {
