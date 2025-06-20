@@ -51,13 +51,35 @@ export async function getClientsByFieldModel(field, value) {
 export const getClientByIdModel = async (id) => {
 	try {
 		const dbInstance = await initClientsDB();
-		const row = await dbInstance.db.get(getByIdQuery('clients'), [id]);
-		return row;
+		const client = await dbInstance.get(getByIdQuery('clients'), [id]);
+
+		console.log('🔍 Raw DB client:', client); // Add this line
+
+
+		if (!client) return null;
+
+		// Map DB snake_case to frontend camelCase
+		return {
+			id: client.id,
+			firstName: client.firstName,
+			middleName: client.middleName,
+			lastName: client.lastName,
+			companyName: client.companyName,
+			address: client.address,
+			region: client.region,
+			city: client.city,
+			nationality: client.nationality,
+			dateOfBirth: client.dateOfBirth,
+			gender: client.gender,
+			phone: client.phone?.split(',') || [],
+			email: client.email
+		};
 	} catch (error) {
 		console.error('Database error in getClientByIdModel:', error);
 		throw error;
 	}
 };
+
 
 export async function addClientModel({
 	firstName,
@@ -157,7 +179,7 @@ export async function updateClientModel({
 	]);
 
 	try {
-		const result = await dbInstance.db.run(updateClientQuery('clients'), [
+		const result = await dbInstance.run(updateClientQuery('clients'), [
 			firstName,
 			middleName,
 			lastName,

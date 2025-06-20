@@ -39,8 +39,13 @@ export async function addClient(data) {
 export async function getClientById(id) {
 	const res = await fetch(`${API_BASE_URL}/${id}`);
 	if (!res.ok) throw new Error('Failed to fetch client');
-	return await res.json();
+
+	const json = await res.json();
+	console.log('📦 Raw API response:', json); // ADD THIS
+
+	return json;
 }
+
 // ✅ Update existing client
 export async function updateClient(id, data) {
 	try {

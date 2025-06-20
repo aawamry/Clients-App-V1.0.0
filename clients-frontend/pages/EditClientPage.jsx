@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getClientById, updateClient } from '../services/clientService';
 import { toast } from 'react-toastify';
-//...
+
 function EditClientPage() {
 	const { id } = useParams();
 	const navigate = useNavigate();
@@ -21,6 +21,7 @@ function EditClientPage() {
 		phone: '',
 		email: ''
 	});
+
 	const [loading, setLoading] = useState(true);
 	const [formErrors, setFormErrors] = useState([]);
 	const [error, setError] = useState('');
@@ -29,7 +30,21 @@ function EditClientPage() {
 		async function fetchClient() {
 			try {
 				const client = await getClientById(id);
-				setFormData(client);
+				console.log('✅ Full response:', client);
+				setFormData({
+					firstName: client.firstName || '',
+					middleName: client.middleName || '',
+					lastName: client.lastName || '',
+					companyName: client.companyName || '',
+					address: client.address || '',
+					region: client.region || '',
+					city: client.city || '',
+					nationality: client.nationality || '',
+					dateOfBirth: client.dateOfBirth?.split('T')[0] || '',
+					gender: client.gender || '',
+					phone: Array.isArray(client.phone) ? client.phone.join(', ') : client.phone || '',
+					email: client.email || ''
+				});
 			} catch (err) {
 				console.error(err);
 				setError('Failed to load client data.');
@@ -49,8 +64,13 @@ function EditClientPage() {
 		e.preventDefault();
 		setFormErrors([]);
 
+		const updatedData = {
+			...formData,
+			phone: formData.phone.split(',').map((p) => p.trim())
+		};
+
 		try {
-			const result = await updateClient(id, formData); // clientId from useParams
+			const result = await updateClient(id, updatedData);
 			toast.success('Client Updated Successfully');
 			console.log('✅ Client updated:', result);
 			navigate('/clients');
@@ -64,7 +84,7 @@ function EditClientPage() {
 		}
 	};
 
-	if (loading) return <p>Loading client...</p>;
+	if (loading) return <p>Loading client data...</p>;
 	if (error) return <p className="text-danger">{error}</p>;
 
 	return (
@@ -130,7 +150,7 @@ function EditClientPage() {
 								className="form-control"
 								value={formData[name]}
 								onChange={handleChange}
-								required={name !== 'middleName'} // middleName optional
+								required={name !== 'middleName'}
 							/>
 						</div>
 					);
