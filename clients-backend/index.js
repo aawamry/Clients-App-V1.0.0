@@ -6,6 +6,7 @@ import 'dotenv/config';                                                  // Load
 import cors from 'cors';                                                 // Enable CORS for API requests
 
 import clientAPIRoutes  from './api/clientsapirouts.js'                // Client API routes
+import logAPIRoutes from './api/logsapiroutes.js';                    
 
 // -------------------- App Setup --------------------
 const app = express();                                                  // Initialize Express app
@@ -23,7 +24,8 @@ app.use(express.json({ limit: '5mb' }));
 
 
 // -------------------- API Routes --------------------
-app.use('/api/clients', clientAPIRoutes);                               // Mount client API routes
+app.use('/api/clients', clientAPIRoutes);   // Mount clients API routes
+app.use('/api/logs', logAPIRoutes);                     // Mount logs API routes        
 
 // -------------------- 404 & Error Handlers --------------------
 app.use((req, res) => {

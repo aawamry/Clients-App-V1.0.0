@@ -1,4 +1,4 @@
-import EventsLogDatabase from '../data/data.js';
+import { initEventsLogDB } from '../data/logsdatabase.js';
 import { insertLogQuery } from '../data/queries.js';
 
 /**
@@ -17,7 +17,7 @@ export async function logEvent({
   user_id = null,
   extra_data = null,
 }) {
-  const dbInstance = await EventsLogDatabase.getInstance();
+  const dbInstance = await initEventsLogDB();
   const db = dbInstance.db;
 
   return new Promise((resolve, reject) => {

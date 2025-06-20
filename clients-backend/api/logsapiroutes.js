@@ -1,13 +1,13 @@
 import express from 'express';
-import EventsLogDatabase from '../data/data.js';
+import {initEventsLogDB} from '../data/logsdatabase.js';
 import { getAllLogsQuery } from '../data/queries.js';
-import { logEvent } from '../utils/logger.js';
+import { logEvent } from '../utilities/logger.js';
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    const dbInstance = await EventsLogDatabase.getInstance();
+    const dbInstance = await initEventsLogDB();
     const db = dbInstance.db;
 
     const rows = await db.all(getAllLogsQuery);

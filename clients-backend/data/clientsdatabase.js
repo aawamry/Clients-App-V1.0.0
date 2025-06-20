@@ -10,7 +10,7 @@ import { createClientsTableQuery } from './queries.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const dbPath = path.join(__dirname, 'clients_database.db');
-console.log('📁 Resolved DB file path:', dbPath);
+console.log('📁 Resolved Clients DB file path:', dbPath);
 
 let db = null;
 
