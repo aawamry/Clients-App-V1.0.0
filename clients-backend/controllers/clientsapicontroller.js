@@ -15,7 +15,7 @@ import { logEvent } from '../utilities/logger.js'
 export async function getAllClientsController(req, res) {
 	try {
 		const clients = await getAllClientsModel();
-		await logEvent({event_type:'Event', event_subject:'FETCH', event_message:'Fetched All Clients'})
+		await logEvent({event_type:'EVENT', event_subject:'FETCH', event_message:'Fetched All Clients'})
 		res.status(200).json(clients);
 	} catch (error) {
 		await logEvent({event_type:'ERROR', event_subject:'Fetching clients failed', event_message:`: ${error.message}`});
@@ -31,7 +31,7 @@ export const getClientByIdController = async (req, res) => {
 			await logEvent({event_type:'ERROR', event_subject:'NOT_FOUND', event_message:`Client with ID ${id} not found`});
 			return res.status(404).json({ error: 'Client not found' });
 		}
-		await logEvent({event_type:'Event', event_subject:'FETCH', event_message:`Fetched client ID ${id}`});
+		await logEvent({event_type:'EVENT', event_subject:'FETCH', event_message:`Fetched client ID ${id}`});
 		res.json(client);
 	} catch (error) {
 		await logEvent({event_type:'ERROR', event_subject:'Fetching client failed', event_message:`: ${error.message}`});
@@ -49,7 +49,7 @@ export const addClientController = async (req, res) => {
 	try {
 		const client = req.body;
 		const newClient = await addClientModel(client);
-		await logEvent({event_type:'Event', event_subject:'Add Client', event_message:`Added client ${client.firstName} ${client.lastName}`});
+		await logEvent({event_type:'WARNING', event_subject:'Add Client', event_message:`Added client ${client.firstName} ${client.lastName}`});
 		res.status(201).json(newClient);
 	} catch (err) {
 		await logEvent({event_type:'ERROR', event_subject:'Add client failed', event_message: ` ${err.message}`});
@@ -106,7 +106,7 @@ export async function updateClientController(req, res) {
 			});
 			return res.status(404).json({ error: 'Client not found.' });
 		}
-		await logEvent({event_type:'EVENT',event_subject:'UPDATE', event_message:`Updated client ID ${id}: ${firstName} ${lastName}`});
+		await logEvent({event_type:'WARNING',event_subject:'UPDATE CLIENT', event_message:`Updated client ID ${id}: ${firstName} ${lastName}`});
 		res.status(200).json({ message: 'Client updated successfully', updatedClient });
 	} catch (error) {
 		await logEvent({event_type:'ERROR', event_subject:'client update failed',event_message:` ${req.params.id}: ${error.message}`});
@@ -127,7 +127,7 @@ export async function deleteClientController(req, res) {
 			});
 			return res.status(404).json({ error: 'Client not found.' });
 		}
-		await logEvent({ event_type: 'EVENT', event_subject: 'Client Deleted', event_message:`Deleted client ID ${id}` });
+		await logEvent({ event_type: 'WARNING', event_subject: 'Client Deleted', event_message:`Deleted client ID ${id}` });
 		res.status(200).json({ message: 'Client deleted successfully' });
 	} catch (error) {
 		await logEvent({event_type:'ERROR', event_subject:'Delet Failed', event_message:`Delete client ID ${req.params.id} failed: ${error.message}`});
@@ -156,10 +156,10 @@ export const exportClientsCSV = async (req, res) => {
 		];
 		const parser = new Parser({ fields });
 		const csv = parser.parse(clients);
-		await logEvent({event_type:'EVENT', event_subject:'Clients Export Succeeded', event_message:`Exported ${clients.length} clients to CSV`});
+		await logEvent({event_type:'WARNING', event_subject:'Clients Export Succeeded', event_message:`Exported ${clients.length} clients to CSV`});
 		res.header('Content-Type', 'text/csv');
 		res.attachment('clients.csv');
-		await logEvent({event_type:'EVENT',event_subject:'SENT', event_message:`Sent ${clients.length} clients to CSV`});
+		await logEvent({event_type:'WARNING',event_subject:'SENT', event_message:`Sent ${clients.length} clients to CSV`});
 		return res.send(csv);
 	} catch (error) {
 		await logEvent({event_type:'ERROR', event_subject:'Clients Export Failed', event_message:`CSV export failed: ${error.message}`});
@@ -182,7 +182,7 @@ export const importClientsCSV = async (req, res) => {
 
 	try {
 		const { db: dbInstance } = await initClientsDB();
-		await logEvent({event_type:'EVENT', event_subject:'IMPORT CSV Started', event_message:`Started importing ${data.length} clients`});
+		await logEvent({event_type:'WARNING', event_subject:'IMPORT CSV Started', event_message:`Started importing ${data.length} clients`});
 
 		for (const client of data) {
 			if (!client.firstName || !client.lastName || !client.email || !client.phone) {
@@ -243,7 +243,7 @@ export const importClientsCSV = async (req, res) => {
 		console.log('✅ Log file written successfully:', reportPath);
 
 		await logEvent(
-			{event_type:'EVENT', event_subject:'IMPORT_SUCCESS',
+			{event_type:'WARNING', event_subject:'IMPORT_SUCCESS',
 			event_message:`Import complete: ${importedCount} added, ${unimportedCount} skipped`}
 		);
 

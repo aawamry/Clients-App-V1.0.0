@@ -8,6 +8,7 @@ import AddClientPage from './pages/AddClientPage';
 import EditClientPage from './pages/EditClientPage';
 import ViewClientPage from './pages/ViewClientPage';
 import AnalyticsPage from './pages/AnalyticsPage';
+import LogsPage from './pages/LogsPage';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/clients/analytics" element={<AnalyticsPage />} />
             <Route path="/clients/edit/:id" element={<EditClientPage />} />
             <Route path="/clients/view/:id" element={<ViewClientPage />} />
+            <Route path="/logs" element={<LogsPage />} />
           </Routes>
         </main>
         <Footer />

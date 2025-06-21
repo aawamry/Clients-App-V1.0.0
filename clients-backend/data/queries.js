@@ -15,7 +15,7 @@ export const createClientsTableQuery = () => `CREATE TABLE IF NOT EXISTS clients
     created_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP) NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )`;
-export const getAllQuery = (table) => `SELECT * FROM ${table}`;
+export const getAllQuery = (table) => `SELECT * FROM ${table} ORDER BY created_at DESC`;
 export const getByFieldQuery = (table, field) => `SELECT * FROM ${table} WHERE ${field} LIKE ?`;
 export const getByIdQuery = (table, idField = 'id') => `SELECT * FROM ${table} WHERE ${idField} = ?`;
 export const insertClientQuery = (table) =>

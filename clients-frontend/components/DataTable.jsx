@@ -1,6 +1,6 @@
 import React from 'react';
 
-function DataTable({ columns = [], data = [], actions, noDataMessage = 'No records found.' }) {
+function DataTable({ columns = [], data = [], actions, noDataMessage = 'No records found.', getRowClass }) {
 	return (
 		<div className="table-responsive">
 			<table className="table table-sm table-bordered mb-0 text-nowrap">
@@ -15,7 +15,7 @@ function DataTable({ columns = [], data = [], actions, noDataMessage = 'No recor
 				<tbody>
 					{data.length > 0 ? (
 						data.map((row) => (
-							<tr key={row.id}>
+							<tr key={row.id} className={getRowClass ? getRowClass(row) : ''}>
 								{columns.map((col) => (
 									<td key={col.key}>
 										{col.render ? col.render(row[col.key], row) : row[col.key]}
