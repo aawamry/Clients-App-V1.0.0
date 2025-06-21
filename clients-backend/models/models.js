@@ -102,7 +102,7 @@ export async function addClientModel({
 
 	const phoneString = Array.isArray(phone) ? phone.join(',') : phone;
 
-	const result = await dbInstance.db.run(insertClientQuery('clients'), [
+	const result = await dbInstance.run(insertClientQuery('clients'), [
 		firstName,
 		middleName,
 		lastName,
