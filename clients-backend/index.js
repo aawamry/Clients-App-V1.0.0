@@ -18,10 +18,12 @@ const __dirname = path.dirname(__filename);
 
 // -------------------- Middleware Setup --------------------
 app.use(cors());                                                        // Enable CORS
-app.use(express.json());                                                // Parse incoming JSON
 app.use(express.urlencoded({ extended: true }));                        // Parse form data
 app.use(express.json({ limit: '5mb' }));
 
+// 🔓 Expose uploads and logs folders if needed
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/logs', express.static(path.join(__dirname, 'logs')));
 
 // -------------------- API Routes --------------------
 app.use('/api/clients', clientAPIRoutes);   // Mount clients API routes
@@ -38,6 +40,6 @@ app.use((err, req, res, next) => {
 });
 
 // -------------------- Start Server --------------------
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
