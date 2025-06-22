@@ -9,7 +9,7 @@ import {
   deleteClientController
 } from '../controllers/clientsapicontroller.js';
 
-import upload from '../middlewares/upload.js';
+import upload from '../utilities/upload.js';
 import { importClientsCSV, exportClientsCSV } from '../controllers/clientsapicontroller.js';
 
 
