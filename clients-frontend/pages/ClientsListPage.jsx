@@ -74,6 +74,8 @@ function ClientsListPage() {
 		const selectedFile = event.target.files[0];
 		if (!selectedFile) return;
 
+		console.log('📁 File selected:', selectedFile.name);
+
 		if (!selectedFile.name.endsWith('.csv')) {
 			toast.error('Please upload a valid .csv file.');
 			return;
@@ -83,6 +85,7 @@ function ClientsListPage() {
 
 	const handleUpload = async (event) => {
 		event.preventDefault();
+		console.log('📤 handleUpload triggered'); // ✅ Add this
 
 		if (!file) return toast.warning('Please select a CSV file first.');
 
@@ -98,7 +101,7 @@ function ClientsListPage() {
 				try {
 					const response = await axios.post(
 						'http://localhost:3000/api/csv/import-csv',
-						{ data: csvData },
+						csvData,
 						{ headers: { 'Content-Type': 'application/json' } }
 					);
 					toast.success(response.data?.message || 'Clients imported successfully');
@@ -106,6 +109,9 @@ function ClientsListPage() {
 					console.error('Import failed:', err);
 					toast.error('Failed to import clients');
 				}
+			},
+			error: function (err) {
+			console.error('❌ Papa Parse error:', err); // ✅ Add this too
 			}
 		});
 	};

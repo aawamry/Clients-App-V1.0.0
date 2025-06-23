@@ -25,9 +25,10 @@ export const exportClientsCSV = async (req, res) => {
 		];
 		const parser = new Parser({ fields });
 		const csv = parser.parse(clients);
+		const fileName = `clients_export_${new Date().toISOString().slice(0, 10)}.csv`;
 		await logEvent({event_type:'WARNING', event_subject:'Clients Export Succeeded', event_message:`Exported ${clients.length} clients to CSV`});
 		res.header('Content-Type', 'text/csv');
-		res.attachment('clients.csv');
+		res.attachment(fileName);
 		await logEvent({event_type:'WARNING',event_subject:'SENT', event_message:`Sent ${clients.length} clients to CSV`});
 		return res.send(csv);
 	} catch (error) {
