@@ -110,6 +110,33 @@ function ClientsListPage() {
 		});
 	};
 
+	const handleExport = async () => {
+		try {
+			const response = await axios.get('http://localhost:3000/api/csv/export-csv', {
+				responseType: 'blob'
+			});
+
+			const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8;' });
+			const url = window.URL.createObjectURL(blob);
+
+			const timestamp = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+			const fileName = `clients_export_${timestamp}.csv`;
+
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = fileName;
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			window.URL.revokeObjectURL(url);
+
+			toast.success('CSV export successful');
+		} catch (error) {
+			console.error('CSV export failed:', error);
+			toast.error('Failed to export CSV');
+		}
+	};
+
 	return (
 		<div className="container-fluid mt-4">
 			<div className="card shadow-sm">
@@ -121,13 +148,9 @@ function ClientsListPage() {
 							+ Add Client
 						</button>
 
-						<a
-							href="http://localhost:3000/api/csv/export-csv"
-							className="btn btn-outline-success btn-sm"
-							download="clients.csv"
-						>
+						<button className="btn btn-outline-success btn-sm" onClick={handleExport}>
 							⬇️ Export CSV
-						</a>
+						</button>
 
 						<form className="d-flex gap-2 align-items-center" onSubmit={handleUpload}>
 							<input
