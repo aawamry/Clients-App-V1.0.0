@@ -97,7 +97,7 @@ function ClientsListPage() {
 
 				try {
 					const response = await axios.post(
-						'http://localhost:3000/api/clients/import-csv',
+						'http://localhost:3000/api/csv/import-csv',
 						{ data: csvData },
 						{ headers: { 'Content-Type': 'application/json' } }
 					);
@@ -122,7 +122,7 @@ function ClientsListPage() {
 						</button>
 
 						<a
-							href="http://localhost:3000/api/clients/export-csv"
+							href="http://localhost:3000/api/csv/export-csv"
 							className="btn btn-outline-success btn-sm"
 							download="clients.csv"
 						>

@@ -9,8 +9,6 @@ import {
   deleteClientController
 } from '../controllers/clientsapicontroller.js';
 
-import upload from '../utilities/upload.js';
-import { importClientsCSV, exportClientsCSV } from '../controllers/clientsapicontroller.js';
 
 
 const router = express.Router();
@@ -27,10 +25,6 @@ router.get('/', getAllClientsController);
 
 // POST /api/clients — Create a new client
 router.post('/', clientValidationRules, addClientController);
-
-router.get('/export-csv', exportClientsCSV);
-
-router.post('/import-csv', upload.single('file'), importClientsCSV);
 
 // GET /api/clients/:id — Get client by ID
 router.get('/:id', getClientByIdController);

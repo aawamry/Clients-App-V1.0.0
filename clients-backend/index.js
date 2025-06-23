@@ -7,6 +7,7 @@ import cors from 'cors';                                                 // Enab
 
 import clientAPIRoutes  from './api/clientsapirouts.js'                // Client API routes
 import logAPIRoutes from './api/logsapiroutes.js';                    
+import csvImportExportRoutes from './api/importerexporterapiroutes.js';                    
 
 // -------------------- App Setup --------------------
 const app = express();                                                  // Initialize Express app
@@ -28,6 +29,7 @@ app.use('/logs', express.static(path.join(__dirname, 'logs')));
 // -------------------- API Routes --------------------
 app.use('/api/clients', clientAPIRoutes);   // Mount clients API routes
 app.use('/api/logs', logAPIRoutes);                     // Mount logs API routes        
+app.use('/api/csv', csvImportExportRoutes);                     // Mount csv API routes        
 
 // -------------------- 404 & Error Handlers --------------------
 app.use((req, res) => {
