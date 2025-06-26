@@ -14,36 +14,33 @@ export async function getAllClientsController(req, res) {
 		/* await logEvent({event_type:'EVENT', event_subject:'FETCH', event_message:'Fetched All Clients'}) */
 		res.status(200).json(records);
 	} catch (error) {
-		await logEvent({
-			event_type: 'ERROR',
-			event_subject: 'Fetching clients failed',
-			event_message: `: ${error.message}`
-		});
-		res.status(500).json({ error: 'Failed to fetch records' });
+		return next(error)
 	}
 }
 
-export const getClientByIdController = async (req, res) => {
+export const getClientByIdController = async (req, res, next) => {
 	const { id } = req.params;
 	try {
 		const record = await getClientByIdModel(id);
+
 		if (!record) {
-			await logEvent({
-				event_type: 'ERROR',
-				event_subject: `Client with ID ${id} not found`,
-				event_message: `${error.message}`
-			});
-			return res.status(404).json({ error: `${error.message}` });
+			const error = new Error(`Client with ID ${id} not found`);
+			error.status = 404;
+			error.context = { id };
+			return next(error); // ✅ Forward to error middleware
 		}
-		await logEvent({ event_type: 'EVENT', event_subject: 'FETCH', event_message: `Fetched client ID ${id}` });
+
+		await logEvent({
+			type: 'event',
+			subject: 'FETCH',
+			message: `Fetched client ID ${id}`,
+			user_id: req.user?.id || null,
+			extra_data: { id }
+		});
+
 		res.json(record);
 	} catch (error) {
-		await logEvent({
-			event_type: 'ERROR',
-			event_subject: 'Fetching client failed',
-			event_message: `: ${error.message}`
-		});
-		res.status(500).json({ error: 'Server error' });
+		next(error); // ✅ Any DB/logic error goes here
 	}
 };
 
@@ -51,37 +48,26 @@ export const getClientByIdController = async (req, res) => {
 export const addClientController = async (req, res) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
-		await logEvent({
-			event_type: 'ERROR',
-			event_subject: 'Validation Error',
-			event_message: `Add client validation failed: ${JSON.stringify(errors.array())}`
-		});
-		return res.status(400).json({ errors: errors.array() });
+		return next(errors.array())
 	}
 	try {
 		const record = req.body;
 		const newRecord = await addClientModel(record);
 		await logEvent({
-			event_type: 'WARNING',
-			event_subject: 'Add Client',
-			event_message: `Added client ${client.firstName} ${client.lastName}`
+			type: 'WARNING',
+			subject: 'Add Client',
+			message: `Added client ${record.firstName} ${record.lastName}`
 		});
 		res.status(201).json(newRecord);
-	} catch (err) {
-		await logEvent({ event_type: 'ERROR', event_subject: 'Add client failed', event_message: ` ${err.message}` });
-		res.status(500).json({ error: 'Internal Server Error' });
+	} catch (error) {
+		return next(error);
 	}
 };
 
 export async function updateClientController(req, res) {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
-		await logEvent({
-			event_type: 'ERROR',
-			event_subject: 'VALIDATION_ERROR',
-			event_message: `Update validation failed: ${JSON.stringify(errors.array())}`
-		});
-		return res.status(400).json({ errors: errors.array() });
+		return next(errors);
 	}
 	try {
 		const { id } = req.params;
@@ -111,12 +97,7 @@ export async function updateClientController(req, res) {
 		const updatedRecord = await updateClientModel(updateData); // Now pass dynamically built object
 
 		if (!updatedRecord) {
-			await logEvent({
-				event_type: 'ERROR',
-				event_subject: 'NOT_FOUND',
-				event_message: `Client ID ${id} not found for update`
-			});
-			return res.status(404).json({ error: 'Client not found.' });
+			return next(errors);
 		}
 		await logEvent({
 			event_type: 'WARNING',
@@ -125,12 +106,7 @@ export async function updateClientController(req, res) {
 		});
 		res.status(200).json({ message: 'Client updated successfully', updatedClient });
 	} catch (error) {
-		await logEvent({
-			event_type: 'ERROR',
-			event_subject: 'client update failed',
-			event_message: ` ${req.params.id}: ${error.message}`
-		});
-		res.status(500).json({ error: 'Error updating client: ' + error.message });
+		return next(error);
 	}
 }
 
@@ -140,12 +116,7 @@ export async function deleteClientController(req, res) {
 		const deletedRecord = await deleteClientModel(id);
 
 		if (!deletedRecord) {
-			await logEvent({
-				event_type: 'ERROR',
-				event_subject: 'NOT_FOUND',
-				event_message: `Delete failed: Client ID ${id} not found`
-			});
-			return res.status(404).json({ error: 'Client not found.' });
+			return next(errors);
 		}
 		await logEvent({
 			event_type: 'WARNING',
@@ -154,11 +125,6 @@ export async function deleteClientController(req, res) {
 		});
 		res.status(200).json({ message: 'Client deleted successfully' });
 	} catch (error) {
-		await logEvent({
-			event_type: 'ERROR',
-			event_subject: 'Delet Failed',
-			event_message: `Delete client ID ${req.params.id} failed: ${error.message}`
-		});
-		res.status(500).json({ error: error.message });
+		return next(error);
 	}
 }
