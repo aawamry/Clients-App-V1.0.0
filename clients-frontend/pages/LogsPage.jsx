@@ -42,6 +42,7 @@ function LogsPage() {
 		{ key: 'type', label: 'Type' },
 		{ key: 'subject', label: 'Subject' },
 		{ key: 'message', label: 'Message' },
+		{ key: 'extra_data', label: 'Extra Data' },
 	];
 
 	return (
@@ -51,8 +52,8 @@ function LogsPage() {
 				columns={columns}
 				data={paginatedLogs}
 				getRowClass={(row) =>
-					row.type === 'ERROR' ? 'table-danger' :
-					row.type === 'WARNING' ? 'table-warning' :
+					row.type === 'error' ? 'table-danger' :
+					row.type === 'warning' ? 'table-warning' :
 					''
 				}
 			/>
