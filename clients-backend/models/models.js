@@ -9,20 +9,16 @@ import {
 } from '../data/queries.js';
 
 export async function getAllClientsModel() {
-	console.log('📥 getAllClients called');
 	const dbInstance = await initClientsDB();
-	console.log('✅ Clients Database instance acquired');
+	const records = await dbInstance.all(getAllQuery('clients'));
 
-	const clients = await dbInstance.all(getAllQuery('clients'));
-	console.log('📄 Retrieved clients from DB:', clients.length);
+	console.log('📄 models.js - Retrieved clients from DB:', records.length);
 
-	return clients;
+	return records;
 }
 
 export async function getClientsByFieldModel(field, value) {
-	console.log(`🔍 getClientsByField called with field: ${field}, value: ${value}`);
 	const dbInstance = await initClientsDB();
-	console.log('✅ Database instance acquired');
 
 	const allowedFields = [
 		'id',
@@ -38,44 +34,43 @@ export async function getClientsByFieldModel(field, value) {
 	];
 
 	if (!allowedFields.includes(field)) {
-		console.error(`❌ Field ${field} is not allowed for searching.`);
-		throw new Error(`Field ${field} is not allowed for searching.`);
+		console.error(`❌ models.js -Field ${field} is not allowed for searching.`);
+		throw new Error(`models.js - Field ${field} is not allowed for searching.`);
 	}
 
-	const clients = await dbInstance.db.all(getByFieldQuery('clients', field), [`%${value}%`]);
-	console.log('📄 Retrieved matching clients:', clients.length);
+	const records = await dbInstance.all(getByFieldQuery('clients', field), [`%${value}%`]);
+	console.log('📄 models.js - Retrieved matching clients:', records.length);
 
-	return clients;
+	return records;
 }
 
 export const getClientByIdModel = async (id) => {
 	try {
 		const dbInstance = await initClientsDB();
-		const client = await dbInstance.get(getByIdQuery('clients'), [id]);
+		const record = await dbInstance.get(getByIdQuery('clients'), [id]);
 
-		console.log('🔍 Raw DB client:', client); // Add this line
+		console.log('🔍 models.js -Raw DB client:', record);
 
-
-		if (!client) return null;
+		if (!record) return null;
 
 		// Map DB snake_case to frontend camelCase
 		return {
-			id: client.id,
-			firstName: client.firstName,
-			middleName: client.middleName,
-			lastName: client.lastName,
-			companyName: client.companyName,
-			address: client.address,
-			region: client.region,
-			city: client.city,
-			nationality: client.nationality,
-			dateOfBirth: client.dateOfBirth,
-			gender: client.gender,
-			phone: client.phone?.split(',') || [],
-			email: client.email
+			id: record.id,
+			firstName: record.firstName,
+			middleName: record.middleName,
+			lastName: record.lastName,
+			companyName: record.companyName,
+			address: record.address,
+			region: record.region,
+			city: record.city,
+			nationality: record.nationality,
+			dateOfBirth: record.dateOfBirth,
+			gender: record.gender,
+			phone: record.phone?.split(',') || [],
+			email: record.email
 		};
 	} catch (error) {
-		console.error('Database error in getClientByIdModel:', error);
+		console.error('models.js - Database error in getClientByIdModel:', error);
 		throw error;
 	}
 };
@@ -95,13 +90,10 @@ export async function addClientModel({
 	phone = [],
 	email,
 }) {
-	console.log('➕ addClient called with:', { firstName, lastName, companyName, phone, city, email });
+	console.log('➕ models.js - addClient called with:', { firstName, lastName, companyName, phone, city, email });
 
 	const dbInstance = await initClientsDB();
-	console.log('✅ Database instance acquired');
-
 	const phoneString = Array.isArray(phone) ? phone.join(',') : phone;
-
 	const result = await dbInstance.run(insertClientQuery('clients'), [
 		firstName,
 		middleName,
@@ -117,10 +109,10 @@ export async function addClientModel({
 		email,
 	]);
 
-	console.log('📤 Insert result:', result);
+	console.log('📤 models.js - Insert result:', result);
 
 	if (result.changes > 0) {
-		console.log('✅ Client added with ID:', result.lastID);
+		console.log('✅ models.js - Client added with ID:', result.lastID);
 		return {
 			id: result.lastID,
 			firstName,
@@ -137,7 +129,7 @@ export async function addClientModel({
 			email,
 		};
 	} else {
-		console.warn('⚠️ No Client was added.');
+		console.warn('⚠️ models.js - No Client was added.');
 		return null;
 	}
 }
@@ -161,8 +153,8 @@ export async function updateClientModel({
 	const phoneArray = Array.isArray(phone) ? phone : [phone];
 	const phoneString = phoneArray.join(',');
 
-	console.log('🔄 Updating client in DB with ID:', id);
-	console.log('🔄 Update parameters:', [
+	console.log('🔄 models.js - Updating client in DB with ID:', id);
+	console.log('🔄 models.js - Update parameters:', [
 		firstName,
 		middleName,
 		lastName,
@@ -195,9 +187,9 @@ export async function updateClientModel({
 			id
 		]);
 
-		console.log('🔄 DB update completed:', result);
+		console.log('🔄 models.js - DB update completed:', result);
 
-		if (result.changes && result.changes > 0) {
+		if (result.changes > 0) {
 			return {
 				id,
 				firstName,
@@ -215,7 +207,7 @@ export async function updateClientModel({
 			};
 		}
 	} catch (error) {
-		console.error('❌ Error updating client:', error);
+		console.error('❌ models.js - Error updating client:', error);
 		throw error;
 	}
 
@@ -224,6 +216,6 @@ export async function updateClientModel({
 
 export async function deleteClientModel(id) {
 	const dbInstance = await initClientsDB();
-	await dbInstance.db.run(deleteClientQuery('clients'), [id]);
+	await dbInstance.run(deleteClientQuery('clients'), [id]);
 	return { message: `Client ${id} Deleted Successfully` };
 }
