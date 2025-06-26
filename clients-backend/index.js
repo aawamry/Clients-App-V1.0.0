@@ -8,6 +8,7 @@ import cors from 'cors';                                                 // Enab
 import clientAPIRoutes  from './api/clientsapirouts.js'                // Client API routes
 import logAPIRoutes from './api/logsapiroutes.js';                    
 import csvImportExportRoutes from './api/importerexporterapiroutes.js';                    
+import errorHandler from './middlewares/errorHandler.js';
 
 // -------------------- App Setup --------------------
 const app = express();                                                  // Initialize Express app
@@ -21,6 +22,7 @@ const __dirname = path.dirname(__filename);
 app.use(cors());                                                        // Enable CORS
 app.use(express.urlencoded({ extended: true }));                        // Parse form data
 app.use(express.json({ limit: '5mb' }));
+app.use(errorHandler);
 
 // 🔓 Expose uploads and logs folders if needed
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
