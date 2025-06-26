@@ -9,6 +9,8 @@ import clientAPIRoutes  from './api/clientsapirouts.js'                // Client
 import logAPIRoutes from './api/logsapiroutes.js';                    
 import csvImportExportRoutes from './api/importerexporterapiroutes.js';                    
 import errorHandler from './middlewares/errorHandler.js';
+import { initClientsDB } from './data/clientsdatabase.js';
+import { initEventsLogDB } from './data/logsdatabase.js';
 
 // -------------------- App Setup --------------------
 const app = express();                                                  // Initialize Express app
@@ -22,7 +24,6 @@ const __dirname = path.dirname(__filename);
 app.use(cors());                                                        // Enable CORS
 app.use(express.urlencoded({ extended: true }));                        // Parse form data
 app.use(express.json({ limit: '5mb' }));
-app.use(errorHandler);
 
 // 🔓 Expose uploads and logs folders if needed
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -33,17 +34,32 @@ app.use('/api/clients', clientAPIRoutes);   // Mount clients API routes
 app.use('/api/logs', logAPIRoutes);                     // Mount logs API routes        
 app.use('/api/csv', csvImportExportRoutes);                     // Mount csv API routes        
 
-// -------------------- 404 & Error Handlers --------------------
-app.use((req, res) => {
-  res.status(404).json({ error: 'Route not found' });
+app.use((req, res, next) => {
+  const error = new Error(`Route ${req.originalUrl} not found`);
+  error.status = 404;
+  next(error); // 👈 Pass to your errorHandler
 });
 
-app.use((err, req, res, next) => {
-  console.error('❌ Error:', err.stack);
-  res.status(500).json({ error: 'Internal Server Error' });
-});
+app.use(errorHandler);
 
 // -------------------- Start Server --------------------
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
-});
+async function startServer() {
+    try {
+        console.log('--- Initializing Databases ---');
+        await initClientsDB(); // Initialize clients DB first
+        await initEventsLogDB(); // Initialize events log DB next, AND FULLY AWAIT IT
+        console.log('✅ All databases initialized successfully.');
+
+        // Start listening for requests ONLY AFTER databases are ready
+        app.listen(PORT, () => {
+            console.log(`🚀 Server running at http://localhost:${PORT}`);
+        });
+
+    } catch (error) {
+        console.error('❌ Failed to start server or initialize databases:', error);
+        process.exit(1); // Exit if DB init fails
+    }
+}
+
+// Call the startServer function
+startServer();
