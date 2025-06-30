@@ -1,7 +1,7 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { getClientById, deleteClient } from '../services/clientService';
-import { toast } from 'react-toastify';
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getClientById, deleteClient } from "../services/clientService";
+import { toast } from "react-toastify";
 
 function ViewClientPage() {
 	const { id } = useParams();
@@ -14,26 +14,48 @@ function ViewClientPage() {
 				const data = await getClientById(id);
 				setClient(data);
 			} catch (error) {
-				console.error('Failed to fetch client:', error);
+				console.error("Failed to fetch client:", error);
 			}
 		}
 		fetchClient();
 	}, [id]);
 
 	const handleDelete = async () => {
-		if (confirm('Are you sure you want to delete this client?')) {
+		if (confirm("Are you sure you want to delete this client?")) {
 			try {
 				await deleteClient(id);
-				navigate('/clients');
-				toast.success('Client deleted');
+				navigate("/clients");
+				toast.success("Client deleted");
 			} catch (error) {
-				console.error('Failed to delete client:', error);
-				toast.error('Failed to delete client');
+				console.error("Failed to delete client:", error);
+				toast.error("Failed to delete client");
 			}
 		}
 	};
 
 	if (!client) return <p>Loading client data...</p>;
+
+	// Define fields to render dynamically
+	const fields = [
+		{ label: "First Name", key: "firstName" },
+		{ label: "Middle Name", key: "middleName" },
+		{ label: "Last Name", key: "lastName" },
+		{ label: "Company Name", key: "companyName" },
+		{ label: "Address", key: "address" },
+		{ label: "Region", key: "region" },
+		{ label: "City", key: "city" },
+		{ label: "Nationality", key: "nationality" },
+		{ label: "Date of Birth", key: "dateOfBirth" },
+		{ label: "Gender", key: "gender" },
+		{ label: "Phone", key: "phone" },
+		{ label: "Email", key: "email" },
+	];
+
+	// Split into pairs of two fields per row
+	const rows = [];
+	for (let i = 0; i < fields.length; i += 2) {
+		rows.push(fields.slice(i, i + 2));
+	}
 
 	return (
 		<div className="container mt-4">
@@ -43,42 +65,25 @@ function ViewClientPage() {
 				<div className="card-body">
 					<table className="table table-sm table-bordered">
 						<tbody>
-							<tr>
-								<th>First Name</th>
-								<td>{client.firstName}</td>
-								<th>Middle Name</th>
-								<td>{client.middleName || <em>—</em>}</td>
-							</tr>
-							<tr>
-								<th>Last Name</th>
-								<td>{client.lastName}</td>
-								<th>Company Name</th>
-								<td>{client.companyName}</td>
-							</tr>
-							<tr>
-								<th>Address</th>
-								<td>{client.address}</td>
-								<th>Region</th>
-								<td>{client.region}</td>
-							</tr>
-							<tr>
-								<th>City</th>
-								<td>{client.city}</td>
-								<th>Nationality</th>
-								<td>{client.nationality}</td>
-							</tr>
-							<tr>
-								<th>Date of Birth</th>
-								<td>{client.dateOfBirth}</td>
-								<th>Gender</th>
-								<td>{client.gender}</td>
-							</tr>
-							<tr>
-								<th>Phone</th>
-								<td>{client.phone}</td>
-								<th>Email</th>
-								<td>{client.email}</td>
-							</tr>
+							{rows.map((pair, index) => (
+								<tr key={index}>
+									{pair.map((field) => (
+										<>
+											<th key={`${field.key}-label`}>{field.label}</th>
+											<td key={`${field.key}-value`}>
+												{client[field.key] || <em>—</em>}
+											</td>
+										</>
+									))}
+									{/* If there was only one field in the last row, fill the other cells */}
+									{pair.length < 2 && (
+										<>
+											<th></th>
+											<td></td>
+										</>
+									)}
+								</tr>
+							))}
 						</tbody>
 					</table>
 
@@ -90,10 +95,18 @@ function ViewClientPage() {
 						>
 							✎ Edit
 						</button>
-						<button className="btn btn-outline-danger btn-sm" onClick={handleDelete} title="Delete">
+						<button
+							className="btn btn-outline-danger btn-sm"
+							onClick={handleDelete}
+							title="Delete"
+						>
 							× Delete
 						</button>
-						<button className="btn btn-outline-secondary btn-sm" onClick={() => navigate('/clients')} title="Back">
+						<button
+							className="btn btn-outline-secondary btn-sm"
+							onClick={() => navigate("/clients")}
+							title="Back"
+						>
 							← Back
 						</button>
 					</div>
